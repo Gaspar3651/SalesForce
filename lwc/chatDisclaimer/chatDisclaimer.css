@@ -1,0 +1,15 @@
+.btn-general{
+    float: right;
+    margin-right: 4px;
+}
+
+.btn{
+    margin: 7px 3px;
+    width: 30px;
+    height: 30px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    box-shadow: 2px 2px 2px #000;
+}

@@ -6,6 +6,10 @@ import listFiles from '@salesforce/apex/FileUploaderClass.listFiles';
 export default class UploadFile extends LightningElement {
     @api recordId;
     @track listFiles;
+    listFilesDelet = [];
+
+    viewFiles = false;
+    spinner = false;
 
     textFiles = [];
     readFile(fileSource) {
@@ -26,6 +30,7 @@ export default class UploadFile extends LightningElement {
 
 
     uploadFiles(){
+        this.showSpinner();
         this.textFiles.forEach(item => {
             const {base64, fileName} = item
             // console.log(base64);
@@ -36,39 +41,69 @@ export default class UploadFile extends LightningElement {
                 filename: fileName, 
                 recordId: this.recordId
             })
-            .then(result=>{
+            .then(()=>{
                 console.log('OPAAAAA');
                 this.fileData = null
-                // let title = `${filename} uploaded successfully!!`
-                // this.toast(title)
+                if (viewFiles) {
+                    this.listarArquivos();
+                }
             })
             .catch(error=>{
                 console.log('uploadFiles ERROR: ' + error.body.message);
 
             });
         });
+        this.closeSpinner();
     }
 
     listarArquivos(){
-        listFiles({
-            recordId: this.recordId
-        }).then(result=>{
-            this.listFiles = result;
-            console.log('---------> '+this.listFiles);
-        }).catch(error=>{
-            console.log('listFiles ERROR: ' + error.body.message);
-        });
+        this.viewFiles = !this.viewFiles;
+        console.log(this.viewFiles);
+
+        if (this.viewFiles) {  
+            this.showSpinner(); 
+            listFiles({
+                recordId: this.recordId
+            }).then(result=>{
+                this.listFiles = result;
+                
+                this.closeSpinner();
+            }).catch(error=>{
+                console.log('listFiles ERROR: ' + error.body.message);
+            });
+        }
+    }
+
+    selecionaArquivo(event){
+        var idSelecionado = event.target.value;
+        
+        this.listFilesDelet[this.listFilesDelet.length] = idSelecionado;
     }
 
     removeFiles(){
+        this.showSpinner();
         removeFiles({  
-            recordId: this.recordId
+            recordId: this.recordId,
+            listaDelet: this.listFilesDelet
         })
-        .then(result=>{
+        .then(()=>{
+            this.closeSpinner();
             console.log('FUNCIONOU');
+            if (viewFiles) {
+                this.listarArquivos();
+            }
         })
         .catch(error=>{
             console.log('removeFiles ERROR: ' + error.body.message);
         });
+    }
+
+
+
+    showSpinner(){
+        this.spinner = true;
+    }
+    closeSpinner(){
+        this.spinner = false;
     }
 }

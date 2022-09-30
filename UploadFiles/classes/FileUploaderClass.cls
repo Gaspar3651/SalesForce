@@ -19,24 +19,7 @@ public with sharing class FileUploaderClass {
 
 
     @AuraEnabled
-    public static void removeFiles(Id recordId){
-        Set<Id> arquivoId = new Set<Id>();
-        Date hj = System.now().date();
-
-        List<Account> getListAccount = [SELECT Id, (SELECT Id, CreatedDate FROM CombinedAttachments) FROM Account WHERE Id =: recordId];
-        List<Account> listAccount = new List<Account>();
-
-        for(Account item: getListAccount){
-            
-            for(CombinedAttachment att : item.CombinedAttachments){
-                Date comp = att.CreatedDate.date();
-                
-                if (comp == hj) {
-                    arquivoId.add(att.id);
-                }
-            }
-        }
-
+    public static void removeFiles(Id recordId, List<String> listaDelet){
 
         List<ContentDocumentLink> ContentDocumentLinkList =[
             SELECT 
@@ -56,7 +39,7 @@ public with sharing class FileUploaderClass {
             DocIdList.add(cdl.contentdocumentid);
         }
 
-        List<ContentDocument> ConDocList =[SELECT Id, CreatedBy.name , ContentSize, ParentId FROM ContentDocument WHERE Id IN :arquivoId];
+        List<ContentDocument> ConDocList =[SELECT Id, CreatedBy.name , ContentSize, ParentId FROM ContentDocument WHERE Id IN :listaDelet];
         delete ConDocList;
     }
     

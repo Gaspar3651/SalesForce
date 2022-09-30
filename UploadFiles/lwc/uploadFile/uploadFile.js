@@ -1,9 +1,11 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 import uploadFiles from '@salesforce/apex/FileUploaderClass.uploadFile';
 import removeFiles from '@salesforce/apex/FileUploaderClass.removeFiles';
+import listFiles from '@salesforce/apex/FileUploaderClass.listFiles';
 
 export default class UploadFile extends LightningElement {
     @api recordId;
+    @track listFiles;
 
     textFiles = [];
     readFile(fileSource) {
@@ -35,28 +37,38 @@ export default class UploadFile extends LightningElement {
                 recordId: this.recordId
             })
             .then(result=>{
-                console.log('FUNCIONOU');
+                console.log('OPAAAAA');
                 this.fileData = null
                 // let title = `${filename} uploaded successfully!!`
                 // this.toast(title)
             })
             .catch(error=>{
-                console.log('ERROR: ' + error.body.message);
+                console.log('uploadFiles ERROR: ' + error.body.message);
 
             });
         });
     }
 
+    listarArquivos(){
+        listFiles({
+            recordId: this.recordId
+        }).then(result=>{
+            this.listFiles = result;
+            console.log('---------> '+this.listFiles);
+        }).catch(error=>{
+            console.log('listFiles ERROR: ' + error.body.message);
+        });
+    }
 
     removeFiles(){
-        uploadFiles({  
+        removeFiles({  
             recordId: this.recordId
         })
         .then(result=>{
             console.log('FUNCIONOU');
         })
         .catch(error=>{
-            console.log('ERROR: ' + error.body.message);
+            console.log('removeFiles ERROR: ' + error.body.message);
         });
     }
 }

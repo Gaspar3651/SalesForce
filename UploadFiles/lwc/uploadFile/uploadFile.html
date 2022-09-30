@@ -1,0 +1,32 @@
+<template>
+    <lightning-card title="Upload Multiples Files">
+        <lightning-input type="file" multiple onchange={handleFileChange}></lightning-input>
+
+        <template for:each={textFiles} for:item="file">
+            <div key={file.id} class="bordered">
+                {file.fileName}
+            </div>
+            <div key={InfoApex.id} class="bordered">
+                {InfoApex.fileName}
+            </div>
+        </template>
+        
+        <br>
+
+        <lightning-button variant="brand" label="Enviar Arquivos" title="Enviar Arquivos" onclick={uploadFiles} class="slds-m-left_x-small"></lightning-button>
+        <lightning-button variant="brand" label="Listar Arquivos" title="Listar Arquivos" onclick={listarArquivos} class="slds-m-left_x-small"></lightning-button>
+        
+        <br>
+        <br>
+
+        <div>
+            <template if:true={listFiles}>
+                <template for:each={listFiles} for:item="item">
+                    <p key={item.Id}><input type="checkbox"> {item.Title}</p>
+                    <br key={item}>
+                </template>
+            </template>
+        </div>
+            
+    </lightning-card>    
+</template>

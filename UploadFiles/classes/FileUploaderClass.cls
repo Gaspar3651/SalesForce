@@ -19,14 +19,14 @@ public with sharing class FileUploaderClass {
 
 
     @AuraEnabled
-    public static void removeFiles(String recordId){
+    public static void removeFiles(Id recordId){
         Set<Id> arquivoId = new Set<Id>();
         Date hj = System.now().date();
-        
-        List<Case> getListCase = [SELECT Id, (SELECT Id, CreatedDate FROM CombinedAttachments) FROM Case WHERE Id =: recordId];
-        List<Case> listCase = new List<Case>();
 
-        for(Case item: getListCase){
+        List<Account> getListAccount = [SELECT Id, (SELECT Id, CreatedDate FROM CombinedAttachments) FROM Account WHERE Id =: recordId];
+        List<Account> listAccount = new List<Account>();
+
+        for(Account item: getListAccount){
             
             for(CombinedAttachment att : item.CombinedAttachments){
                 Date comp = att.CreatedDate.date();
@@ -60,6 +60,21 @@ public with sharing class FileUploaderClass {
         delete ConDocList;
     }
     
+
+    @AuraEnabled
+    public static List<CombinedAttachment> listFiles(Id recordId){
+        Set<Id> arquivoId = new Set<Id>();
+
+        List<Account> getListAccount = [SELECT Id, (SELECT id, Title FROM CombinedAttachments) FROM Account WHERE Id =: recordId];
+        List<CombinedAttachment> listReturn = new List<CombinedAttachment>();
+
+        for(Account item: getListAccount){
+            for(CombinedAttachment att : item.CombinedAttachments){
+                listReturn.add(att);
+            }
+        }
+        return listReturn;
+    }
     
     
     private static ContentVersion createContentVersion(String base64, String filename) {

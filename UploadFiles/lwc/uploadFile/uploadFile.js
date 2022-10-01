@@ -6,8 +6,9 @@ import listFiles from '@salesforce/apex/FileUploaderClass.listFiles';
 export default class UploadFile extends LightningElement {
     @api recordId;
     @track listFiles;
+    
     listFilesDelet = [];
-
+    labelBtn = "Listar Arquivos";
     viewFiles = false;
     spinner = false;
 
@@ -61,6 +62,7 @@ export default class UploadFile extends LightningElement {
         console.log(this.viewFiles);
 
         if (this.viewFiles) {  
+            this.labelBtn = "Ocultar Arquivos";
             this.showSpinner(); 
             listFiles({
                 recordId: this.recordId
@@ -71,14 +73,38 @@ export default class UploadFile extends LightningElement {
             }).catch(error=>{
                 console.log('listFiles ERROR: ' + error.body.message);
             });
+        }else{
+            this.labelBtn = "Listar Arquivos";
         }
     }
 
+
     selecionaArquivo(event){
         var idSelecionado = event.target.value;
-        
-        this.listFilesDelet[this.listFilesDelet.length] = idSelecionado;
-    }
+        if (this.listFilesDelet.length == 0) {
+            this.listFilesDelet[this.listFilesDelet.length] = idSelecionado;
+        }else{
+            var verificaId = this.listFilesDelet.includes(idSelecionado);
+            
+            if (verificaId) {
+                for (let i = 0; i < this.listFilesDelet.length; i++) {
+                    if (this.listFilesDelet[i] == idSelecionado) {
+                        
+                    }
+                }
+            }else{
+                this.listFilesDelet[this.listFilesDelet.length] = idSelecionado;
+            }
+        }
+
+        this.listFilesDelet.forEach(element => {
+            console.log('-------> '+ element);
+        });
+    }       
+    
+    
+
+
 
     removeFiles(){
         this.showSpinner();

@@ -1,5 +1,7 @@
 <template>
     <lightning-card title="Upload Multiples Files">
+        <lightning-spinner if:true={spinner} alternative-text="Loading..." variant="brand"></lightning-spinner>
+
         <lightning-input type="file" multiple onchange={handleFileChange}></lightning-input>
 
         <template for:each={textFiles} for:item="file">
@@ -14,18 +16,22 @@
         <br>
 
         <lightning-button variant="brand" label="Enviar Arquivos" title="Enviar Arquivos" onclick={uploadFiles} class="slds-m-left_x-small"></lightning-button>
-        <lightning-button variant="brand" label="Listar Arquivos" title="Listar Arquivos" onclick={listarArquivos} class="slds-m-left_x-small"></lightning-button>
+        <lightning-button variant="brand" label={labelBtn} title={labelBtn} onclick={listarArquivos} class="slds-m-left_x-small"></lightning-button>
         
         <br>
         <br>
-
-        <div>
+        
+        <div if:true={viewFiles}>
             <template if:true={listFiles}>
                 <template for:each={listFiles} for:item="item">
-                    <p key={item.Id}><input type="checkbox"> {item.Title}</p>
+                    <button key={item.Id} onclick={selecionaArquivo} value={item.Id} title={item.Title} class="listaArquivos">{item.Title}</button>
                     <br key={item}>
                 </template>
             </template>
+
+            <br>
+            
+            <lightning-button variant="destructive" label="Excluir Arquivos" title="Excluir Arquivos" onclick={removeFiles} class="slds-m-left_x-small"></lightning-button>
         </div>
             
     </lightning-card>    

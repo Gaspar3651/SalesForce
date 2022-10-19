@@ -7,7 +7,7 @@ export default class UploadFile extends LightningElement {
     @api recordId;
     @track listFiles;
     @track listFilesBakup;
-    @track listViewDelet = [];
+    @track listViewDelet;
     
     listFilesDelet = [];
     labelBtn = "Listar Arquivos";
@@ -67,8 +67,6 @@ export default class UploadFile extends LightningElement {
                 recordId: this.recordId
             }).then(result=>{
                 this.listFiles = result;
-                this.listFilesBakup = result;
-                
                 this.closeSpinner();
             }).catch(error=>{
                 console.log('listFiles ERROR: ' + error.body.message);
@@ -95,28 +93,17 @@ export default class UploadFile extends LightningElement {
     
     removeArquivoSelecionado(event){
         var titulo = event.target.title;
-        
-        for (let i = 0; i < this.listFilesBakup.length; i++) {
-            console.log('----------------------------------> '+ this.listFilesBakup[i].Title);
 
-            if (this.listFilesBakup[i].Title == titulo) {
-                this.listFile[this.listFile.length] = this.listFilesBakup[i];
-                
-                
-                this.listFilesDelet.forEach(item => {
-                    if (item == this.listFilesBakup[i].Id) {
-                        this.listFilesDelet.splice(i, 1);
-                    }
-                });
-
-                i += this.listFilesBakup.length;
-            }
-        }
-        
         for (let i = 0; i < this.listViewDelet.length; i++) {
-            if (this.listViewDelet[i].Title == titulo) {
-                this.listViewDelet.splice(i, 1);
+            if (this.listViewDelet[i] == titulo) {
                 
+                // console.log('---> '+ this.listFiles);
+                // this.listFiles[this.listFiles.length].Id = this.listFilesDelet[i];
+                // this.listFiles[this.listFiles.length].Title = this.listViewDelet[i];
+
+                this.listViewDelet.splice(i, 1);
+                this.listFilesDelet.splice(i, 1);
+
                 i += this.listViewDelet.length;
             }
         }

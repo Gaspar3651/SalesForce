@@ -6,10 +6,11 @@ import listFiles from '@salesforce/apex/FileUploaderClass.listFiles';
 export default class UploadFile extends LightningElement {
     @api recordId;
     @track listFiles;
-    @track listFilesBakup;
-    @track listViewDelet;
+
+    @track listViewFiles = [];
+    @track listViewFilesDelet = [];
+    listIdFilesDelet = [];
     
-    listFilesDelet = [];
     labelBtn = "Listar Arquivos";
     viewFiles = false;
     spinner = false;
@@ -43,22 +44,30 @@ export default class UploadFile extends LightningElement {
                 recordId: this.recordId
             })
             .then(()=>{
-                console.log('SARVEE');
-                this.fileData = null
-                this.atualizaConponentes();
+                this.fileData = null;
+                this.closeSpinner();
             })
             .catch(error=>{
                 console.log('uploadFiles ERROR: ' + error.body.message);
             });
         });
-
+        
+        if (this.viewFiles){
+            this.listarArquivos();
+        }
+        setTimeout(() => {
+            this.refreshComponents();
+        }, 2000);
+        
         this.textFiles = [];
     }
 
     listarArquivos(){
         this.viewFiles = !this.viewFiles;
-        console.log(this.viewFiles);
-        this.listViewDelet = [];
+        
+        this.listViewFiles = [];
+        this.listViewFilesDelet = [];
+        this.listIdFilesDelet = [];
 
         if (this.viewFiles) {  
             this.labelBtn = "Ocultar Arquivos";
@@ -67,6 +76,11 @@ export default class UploadFile extends LightningElement {
                 recordId: this.recordId
             }).then(result=>{
                 this.listFiles = result;
+
+                result.forEach(item => {
+                    this.listViewFiles[this.listViewFiles.length] = item.Title;
+                });
+
                 this.closeSpinner();
             }).catch(error=>{
                 console.log('listFiles ERROR: ' + error.body.message);
@@ -78,33 +92,36 @@ export default class UploadFile extends LightningElement {
 
 
     selecionaArquivo(event){
-        var idSelecionado = event.target.value;
         var titulo = event.target.title;
         
-        this.listFilesDelet[this.listFilesDelet.length] = idSelecionado;
-        this.listViewDelet[this.listViewDelet.length] = titulo;
+        this.listViewFilesDelet[this.listViewFilesDelet.length] = titulo;
         
         for (let i = 0; i < this.listFiles.length; i++) {
-            if (this.listFiles[i].Id == idSelecionado) {
-                this.listFiles.splice(i, 1);
+            if (this.listFiles[i].Title == titulo) {
+                this.listIdFilesDelet[this.listIdFilesDelet.length] = this.listFiles[i].Id;
+                i = this.listFiles.length + 5;
+            }
+        }
+        
+        for (let i = 0; i < this.listViewFiles.length; i++) {
+            if (this.listViewFiles[i] == titulo) {
+                this.listViewFiles.splice(i, 1);
+                i = this.listViewFiles.length + 5;
             }
         }
     }    
     
     removeArquivoSelecionado(event){
         var titulo = event.target.title;
+        
+        this.listViewFiles[this.listViewFiles.length] = titulo;
+        
+        for (let i = 0; i < this.listViewFilesDelet.length; i++) {
+            if (this.listViewFilesDelet[i] == titulo) {
+                this.listViewFilesDelet.splice(i, 1);
+                this.listIdFilesDelet.splice(i, 1);
 
-        for (let i = 0; i < this.listViewDelet.length; i++) {
-            if (this.listViewDelet[i] == titulo) {
-                
-                // console.log('---> '+ this.listFiles);
-                // this.listFiles[this.listFiles.length].Id = this.listFilesDelet[i];
-                // this.listFiles[this.listFiles.length].Title = this.listViewDelet[i];
-
-                this.listViewDelet.splice(i, 1);
-                this.listFilesDelet.splice(i, 1);
-
-                i += this.listViewDelet.length;
+                i = this.listViewFilesDelet.length + 5;
             }
         }
     }
@@ -117,10 +134,12 @@ export default class UploadFile extends LightningElement {
         this.showSpinner();
         removeFiles({  
             recordId: this.recordId,
-            listaDelet: this.listFilesDelet
+            listaDelet: this.listIdFilesDelet
         })
         .then(()=>{
             this.closeSpinner();
+            this.listarArquivos();
+            this.refreshComponents();
         })
         .catch(error=>{
             console.log('removeFiles ERROR: ' + error.body.message);
@@ -134,5 +153,9 @@ export default class UploadFile extends LightningElement {
     }
     closeSpinner(){
         this.spinner = false;
+    }
+
+    refreshComponents(){
+        eval("$A.get('e.force:refreshView').fire();");
     }
 }

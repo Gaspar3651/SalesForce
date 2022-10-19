@@ -22,9 +22,10 @@
         <div if:true={viewFiles}>
             <div class="viewFilesGeneral">
                 <div class="viewFilesLeft">
-                    <template if:true={listFiles}>
-                        <template for:each={listFiles} for:item="item">
-                            <button key={item.Id} onclick={selecionaArquivo} value={item.Id} title={item.Title} class="listaArquivos">{item.Title}</button>
+                    <p>Arquivos</p>
+                    <template if:true={listViewFiles}>
+                        <template for:each={listViewFiles} for:item="item">
+                            <button key={item} onclick={selecionaArquivo} value={item} title={item} class="listaArquivos">{item}</button>
                             <br key={item}>
                         </template>
                     </template>
@@ -32,9 +33,10 @@
                 
                 <br>
                 
-                <div if:true={viewFiles} class="viewFilesRigth">
-                    <template if:true={listViewDelet}>
-                        <template for:each={listViewDelet} for:item="item">
+                <div class="viewFilesRigth">
+                    <p>Arquivos a Excluir</p>
+                    <template if:true={listViewFilesDelet}>
+                        <template for:each={listViewFilesDelet} for:item="item">
                             <button key={item} onclick={removeArquivoSelecionado} value={item} title={item} class="listaArquivosDelete">{item}</button>
                             <br key={item}>
                         </template>

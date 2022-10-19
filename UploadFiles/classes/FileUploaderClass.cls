@@ -31,7 +31,8 @@ public with sharing class FileUploaderClass {
             FROM 
                 ContentDocumentLink 
             WHERE 
-                linkedentityid in (SELECT id FROM Account where id= :recordId)];
+                linkedentityid in (SELECT id FROM Account where id= :recordId)
+        ];
 
         List<id> DocIdList = new List<id>();
 

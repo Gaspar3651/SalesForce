@@ -2,3 +2,25 @@
     margin: 5px 5%;
     width: 90%;
 }
+.listaArquivosDelete{
+    margin: 5px 5%;
+    width: 90%;
+}
+
+.viewFilesGeneral{
+    display: flex;
+}
+
+.viewFilesLeft{
+    /* float: left; */
+    width: 45%;
+}
+
+.viewFilesRigth{
+    /* float: right; */
+    width: 45%;
+}
+
+.arquivosParaUpload{
+    text-indent: 10px;
+}

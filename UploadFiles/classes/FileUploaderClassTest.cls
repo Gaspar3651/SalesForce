@@ -1,26 +1,23 @@
 @isTest
 public with sharing class FileUploaderClassTest {
     @isTest
-    static void uploadFileTest(){
-        Case caso = new Case();
-        insert caso;
+    static void FileUploaderTest(){
+        List<String> listIdDelet = new List<String>();
+        Account conta = new Account();
+        conta.Name = 'Teste';
+        insert conta;
 
         Test.startTest();
-            String retorno = FileUploaderClass.uploadFile('Base64Test', 'FileName', caso.Id);
+            String retornoUpload = FileUploaderClass.uploadFile('Base64Test', 'FileName', conta.Id);
+            List<CombinedAttachment> retornoListaArquivos = FileUploaderClass.listFiles(conta.Id);
+            
+            for (CombinedAttachment item: retornoListaArquivos) {
+                listIdDelet.add(item.Id);
+            }
+            FileUploaderClass.removeFiles(conta.Id, listIdDelet);
         Test.stopTest();
-        System.AssertNotEquals(null, retorno);
-    }
-    @isTest
-    static void removeFileTest(){
-        Case caso = new Case();
-        insert caso;
 
-        String retorno = FileUploaderClass.uploadFile('Base64Test', 'FileName', caso.Id);
-
-        Test.startTest();
-            FileUploaderClass.removeFiles(caso.Id);
-        Test.stopTest();
-        List<Case> getListCase = [SELECT Id, (SELECT Id, CreatedDate FROM CombinedAttachments) FROM Case WHERE Id =: caso.Id];
-        System.AssertEquals(0, getListCase[0].CombinedAttachments.size());
+        System.AssertNotEquals(null, retornoUpload);
+        System.AssertEquals(1, retornoListaArquivos.size());
     }
 }

@@ -25,7 +25,7 @@
                     <p>Arquivos</p>
                     <template if:true={listViewFiles}>
                         <template for:each={listViewFiles} for:item="item">
-                            <button key={item} onclick={selecionaArquivo} value={item} title={item} class="listaArquivos">{item}</button>
+                            <button key={item} onclick={selecionaArquivo} value={item.Id} title={item.Name} class="listaArquivos">{item.Name}</button>
                             <br key={item}>
                         </template>
                     </template>
@@ -37,7 +37,7 @@
                     <p>Arquivos a Excluir</p>
                     <template if:true={listViewFilesDelet}>
                         <template for:each={listViewFilesDelet} for:item="item">
-                            <button key={item} onclick={removeArquivoSelecionado} value={item} title={item} class="listaArquivosDelete">{item}</button>
+                            <button key={item} onclick={removeArquivoSelecionado} value={item.Id} title={item.Name} class="listaArquivosDelete">{item.Name}</button>
                             <br key={item}>
                         </template>
                     </template>

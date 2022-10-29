@@ -1,8 +1,8 @@
 import { LightningElement, api, track } from 'lwc';
-import uploadFiles from '@salesforce/apex/FileUploaderClass.uploadFile';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import uploadMultipleFiles from '@salesforce/apex/FileUploaderClass.uploadMultipleFiles';
 import removeFiles from '@salesforce/apex/FileUploaderClass.removeFiles';
 import listFiles from '@salesforce/apex/FileUploaderClass.listFiles';
-
 
 class arquivos{
     Id;
@@ -12,6 +12,9 @@ class arquivos{
 export default class UploadFile extends LightningElement {
     @api recordId;
 
+    @track listBase64Upload = [];
+    @track listNameUpload = [];
+    
     @track listViewFiles = [];
     @track listViewFilesDelet = [];;
     listIdFilesDelet = [];
@@ -31,32 +34,39 @@ export default class UploadFile extends LightningElement {
         });
     }
     async handleFileChange(event) {
+        this.showSpinner();
+        this.listBase64Upload = [];
+        this.listNameUpload = [];
+
         this.textFiles = await Promise.all(
             [...event.target.files].map(file => this.readFile(file))
         );
-        console.log(this.textFiles);       
+         
+        this.textFiles.forEach(item => {
+            this.listBase64Upload.push(item.base64);
+            this.listNameUpload.push(item.fileName);
+        });   
+        
+        this.closeSpinner();
     }
 
 
     uploadMultipleFiles(){
         this.showSpinner();
 
-        this.textFiles.forEach(item => {
-            const {base64, fileName} = item;
-            uploadFiles({ 
-                base64: base64, 
-                filename: fileName, 
-                recordId: this.recordId
-            })
-            .then(()=>{
-                this.fileData = null;
-                this.closeSpinner();
-                this.refreshComponents();
-            })
-            .catch(error=>{
-                console.log('uploadFiles ERROR: ' + error.body.message);
-            });
+        uploadMultipleFiles({
+            listName: this.listNameUpload,
+            listBase64: this.listBase64Upload,
+            recordId: this.recordId
+        }).then(()=>{
+            this.refreshComponents()
+            this.closeSpinner();
+            this.showToast('Sucesso !', 'Arquivos enviados com sucesso', 'success');
+        }).catch(error=>{
+            console.log('uploadMultipleFiles ERROR: ' + error.body.message);
+            this.showToast('ERRO', 'Ocorreu um erro ao enviar os arquivos.\n Por favor, tente mais tarde !', 'error');
         });
+        
         
         if (this.viewFiles){
             this.listarArquivos();
@@ -156,10 +166,12 @@ export default class UploadFile extends LightningElement {
         .then(()=>{
             this.closeSpinner();
             this.listarArquivos();
+            this.showToast('Sucesso !', 'Arquivos excluidos com sucesso', 'success');
             this.refreshComponents();
         })
         .catch(error=>{
             console.log('removeFiles ERROR: ' + error.body.message);
+            this.showToast('ERRO', 'Ocorreu um erro ao enviar os arquivos.\n Por favor, tente mais tarde !', 'error');
         });
     }
 
@@ -170,6 +182,16 @@ export default class UploadFile extends LightningElement {
     }
     closeSpinner(){
         this.spinner = false;
+    }
+
+    showToast(title, message, variant) {
+        const event = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant,
+            mode: 'dismissable'
+        });
+        this.dispatchEvent(event);
     }
 
     refreshComponents(){

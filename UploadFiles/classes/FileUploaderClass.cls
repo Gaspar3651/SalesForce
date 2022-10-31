@@ -1,14 +1,20 @@
 public with sharing class FileUploaderClass {
+    private static Savepoint backup;
+    
+    private static void criarBackup(){
+        backup = Database.setSavepoint();
+    }
+
     @AuraEnabled
     public static void uploadMultipleFiles(List<String> listName, List<String> listBase64, Id recordId){
-        Savepoint sp = Database.setSavepoint();
+        criarBackup();
         
         try {
             for (integer i=0; i < listName.size(); i++) {
                 uploadFile(listBase64[i], listName[i], recordId);
             }
         } catch (Exception e) {
-            Database.rollback(sp);
+            Database.rollback(backup);
             System.debug('ERROR: Método -> FileUploaderClass.uploadMultipleFiles: \n'+ e.getMessage());
         }
     }

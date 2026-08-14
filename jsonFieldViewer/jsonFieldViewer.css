@@ -1,7 +1,7 @@
 /* Arvore JSON. Nao existe Lightning Base Component nem blueprint SLDS para este
    padrao, entao e um custom com prefixo c- montado sobre styling hooks globais. */
 .c-json-arvore {
-    max-block-size: 32rem;
+    max-block-size: 40rem;
     overflow: auto;
     font-family: var(--slds-g-font-family-monospace, 'SF Mono', Consolas, 'Courier New', monospace);
     font-size: var(--slds-g-font-scale-neg-1, 0.75rem);

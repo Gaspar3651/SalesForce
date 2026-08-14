@@ -1,0 +1,80 @@
+<template>
+    <lightning-card icon-name="utility:insert_tag_field" title={tituloExibido}>
+        <div slot="actions">
+            <lightning-button-group>
+                <lightning-button label="Expandir tudo" onclick={expandirTudo} disabled={acoesDesabilitadas}></lightning-button>
+                <lightning-button label="Recolher tudo" onclick={recolherTudo} disabled={acoesDesabilitadas}></lightning-button>
+                <lightning-button label={rotuloModo} onclick={alternarModo} disabled={semConteudo}></lightning-button>
+                <lightning-button label="Copiar" onclick={copiar} disabled={semConteudo}></lightning-button>
+            </lightning-button-group>
+        </div>
+
+        <div class="slds-var-p-horizontal_medium slds-var-p-bottom_medium">
+            <template lwc:if={semConfiguracao}>
+                <p class="slds-text-color_error">
+                    Informe o API Name do campo na configuração do componente (Lightning App Builder).
+                </p>
+            </template>
+
+            <template lwc:elseif={carregando}>
+                <div class="slds-is-relative slds-var-p-around_large">
+                    <lightning-spinner alternative-text="Carregando" size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:elseif={erro}>
+                <p class="slds-text-color_error">{erro}</p>
+            </template>
+
+            <template lwc:elseif={vazio}>
+                <p class="slds-text-color_weak">Campo sem conteúdo.</p>
+            </template>
+
+            <template lwc:elseif={mostrarTexto}>
+                <template lwc:if={jsonInvalido}>
+                    <p class="slds-text-color_weak slds-var-m-bottom_x-small">
+                        O conteúdo não é um JSON válido. Exibindo o texto original.
+                    </p>
+                </template>
+                <pre class="c-json-texto">{textoParaExibir}</pre>
+            </template>
+
+            <template lwc:else>
+                <template lwc:if={truncado}>
+                    <p class="slds-text-color_weak slds-var-m-bottom_x-small">{avisoTruncado}</p>
+                </template>
+
+                <div class="c-json-arvore">
+                    <template for:each={linhas} for:item="linha">
+                        <div key={linha.id} class="c-json-linha" style={linha.estilo}>
+                            <template lwc:if={linha.temFilhos}>
+                                <button
+                                    class="c-json-alternador"
+                                    type="button"
+                                    data-id={linha.id}
+                                    title={linha.rotuloBotao}
+                                    aria-label={linha.rotuloBotao}
+                                    onclick={alternarNo}
+                                >
+                                    <lightning-icon icon-name={linha.icone} size="xx-small"></lightning-icon>
+                                </button>
+                            </template>
+                            <template lwc:else>
+                                <span class="c-json-espacador"></span>
+                            </template>
+
+                            <span class="c-json-chave">{linha.rotuloChave}</span>
+                            <span class={linha.classeValor}>{linha.valor}</span>
+
+                            <template lwc:if={linha.veioDeString}>
+                                <span class="slds-badge slds-var-m-left_xx-small" title="Gravado como JSON escapado dentro de uma string">
+                                    JSON aninhado
+                                </span>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,89 @@
+/* Arvore JSON. Nao existe Lightning Base Component nem blueprint SLDS para este
+   padrao, entao e um custom com prefixo c- montado sobre styling hooks globais. */
+.c-json-arvore {
+    max-block-size: 32rem;
+    overflow: auto;
+    font-family: var(--slds-g-font-family-monospace, 'SF Mono', Consolas, 'Courier New', monospace);
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+    line-height: 1.5;
+    background: var(--slds-g-color-surface-container-1, #ffffff);
+    border: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #e5e5e5);
+    border-radius: var(--slds-g-radius-border-2, 0.25rem);
+    padding: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-json-linha {
+    display: flex;
+    align-items: baseline;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.c-json-linha:hover {
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+}
+
+.c-json-alternador {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    inline-size: 1rem;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.c-json-alternador:focus-visible {
+    outline: none;
+    box-shadow: var(--slds-g-shadow-outline-focus-1, 0 0 3px #0176d3);
+}
+
+.c-json-espacador {
+    flex: none;
+    inline-size: 1rem;
+}
+
+.c-json-chave {
+    flex: none;
+    color: var(--slds-g-color-neutral-base-30, #444444);
+    font-weight: 700;
+}
+
+/* Cor por tipo: o olho acha o valor errado sem precisar ler a chave. */
+.c-json-valor--string {
+    color: var(--slds-g-color-success-base-30, #2e844a);
+}
+
+.c-json-valor--number {
+    color: var(--slds-g-color-accent-container-3, #0b5cab);
+}
+
+.c-json-valor--boolean {
+    color: var(--slds-g-color-warning-base-30, #8c4b02);
+}
+
+.c-json-valor--null {
+    color: var(--slds-g-color-neutral-base-50, #747474);
+    font-style: italic;
+}
+
+.c-json-valor--object,
+.c-json-valor--array {
+    color: var(--slds-g-color-neutral-base-50, #747474);
+}
+
+.c-json-texto {
+    max-block-size: 32rem;
+    overflow: auto;
+    margin: 0;
+    font-family: var(--slds-g-font-family-monospace, 'SF Mono', Consolas, 'Courier New', monospace);
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background: var(--slds-g-color-surface-container-1, #ffffff);
+    border: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #e5e5e5);
+    border-radius: var(--slds-g-radius-border-2, 0.25rem);
+    padding: var(--slds-g-spacing-2, 0.5rem);
+}
